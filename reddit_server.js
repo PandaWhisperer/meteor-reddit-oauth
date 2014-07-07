@@ -90,6 +90,6 @@ var getIdentity = function (accessToken) {
   }
 };
 
-Reddit.retrieveCredential = function(credentialToken, credentialSecret) {
+RedditOauth.retrieveCredential = function(credentialToken, credentialSecret) {
   return OAuth.retrieveCredential(credentialToken, credentialSecret)
 };
