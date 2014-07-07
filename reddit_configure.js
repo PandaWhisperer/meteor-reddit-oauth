@@ -4,7 +4,7 @@ Template.configureLoginServiceDialogForReddit.siteUrl = function () {
 
 Template.configureLoginServiceDialogForReddit.fields = function () {
   return [
-    {property: 'clientId', label: 'API Key'},
-    {property: 'secret', label: 'Secret Key'}
+    {property: 'appId',  label: 'App ID'},
+    {property: 'secret', label: 'Secret'}
   ];
 };

@@ -1,22 +1,22 @@
 // Request reddit credentials for the user
 // @param options {optional}
-// @param credentialRequestCompleteCallback {Function} Callback function to call on
+// @param callback {Function} Callback function to call on
 //   completion. Takes one argument, credentialToken on success, or Error on
 //   error.
-RedditOauth.requestCredential = function (options, credentialRequestCompleteCallback) {
+RedditOauth.requestCredential = function (options, callback) {
   // support both (options, callback) and (callback).
-  if (!credentialRequestCompleteCallback && typeof options === 'function') {
-    credentialRequestCompleteCallback = options;
+  if (!callback && typeof options === 'function') {
+    callback = options;
     options = {};
   }
 
   var config = ServiceConfiguration.configurations.findOne({service: 'reddit'});
   if (!config) {
-    credentialRequestCompleteCallback && credentialRequestCompleteCallback(new ServiceConfiguration.ConfigError("Service not configured"));
+    callback && callback(new ServiceConfiguration.ConfigError("Service not configured"));
     return;
   }
 
-  var credentialToken = Random.id();
+  var state = Random.id();
 
   var scope = [];
   if (options && options.requestPermissions) {
@@ -25,7 +25,7 @@ RedditOauth.requestCredential = function (options, credentialRequestCompleteCall
 
   var loginUrl =
       'https://ssl.reddit.com/api/v1/authorize' +
-      '?client_id=' + config.clientId + '&response_type=code' + '&state=' + credentialToken +
+      '?client_id=' + config.appId + '&response_type=code' + '&state=' + state +
       '&redirect_uri=' + encodeURIComponent(Meteor.absoluteUrl('_oauth/reddit?close')) +
       '&duration=permanent' + '&scope=' + scope;
 
