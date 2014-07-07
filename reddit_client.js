@@ -20,7 +20,7 @@ RedditOauth.requestCredential = function (options, credentialRequestCompleteCall
 
   var scope = [];
   if (options && options.requestPermissions) {
-      scope = options.requestPermissions.join('+');
+      scope = options.requestPermissions.join(',');
   }
 
   var loginUrl =
