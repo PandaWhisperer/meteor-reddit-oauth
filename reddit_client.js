@@ -29,5 +29,5 @@ RedditOauth.requestCredential = function (options, callback) {
       '&redirect_uri=' + encodeURIComponent(Meteor.absoluteUrl('_oauth/reddit?close')) +
       '&duration=permanent' + '&scope=' + scope;
 
-  OAuth.initiateLogin(credentialToken, loginUrl, credentialRequestCompleteCallback);
+  OAuth.initiateLogin(state, loginUrl, callback);
 };
