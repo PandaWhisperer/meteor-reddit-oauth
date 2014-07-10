@@ -1,3 +1,5 @@
+RedditOauth = {};
+
 // Request reddit credentials for the user
 // @param options {optional}
 // @param callback {Function} Callback function to call on
@@ -29,5 +31,5 @@ RedditOauth.requestCredential = function (options, callback) {
       '&redirect_uri=' + encodeURIComponent(Meteor.absoluteUrl('_oauth/reddit?close')) +
       '&duration=permanent' + '&scope=' + scope;
 
-  OAuth.initiateLogin(state, loginUrl, callback);
+  OAuth.initiateLogin(state, loginUrl, callback, {width: 875, height: 400});
 };

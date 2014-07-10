@@ -1,3 +1,5 @@
+RedditOauth = {};
+
 var urlUtil = Npm.require('url');
 
 OAuth.registerService('reddit', 2, null, function(query) {

@@ -13,7 +13,6 @@ Package.on_use(function(api) {
 
   api.add_files( ['reddit_configure.html', 'reddit_configure.js'], 'client');
 
-  api.add_files('reddit_common.js', ['client', 'server']);
   api.add_files('reddit_server.js', 'server');
   api.add_files('reddit_client.js', 'client');
 });
