@@ -47,10 +47,9 @@ var getTokenResponse = function (query) {
     // Request an access token
     responseContent = Meteor.http.post(
       "https://ssl.reddit.com/api/v1/access_token", {
+        auth: [config.appId, config.secret].join(':'),
         params: {
           grant_type: 'authorization_code',
-          // client_id: config.clientId,
-          // client_secret: config.secret,
           code: query.code,
           redirect_uri: Meteor.absoluteUrl("_oauth/reddit?close")
         }
