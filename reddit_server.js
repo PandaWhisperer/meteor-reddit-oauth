@@ -72,7 +72,7 @@ var getTokenResponse = function (query) {
 
   if (!accessToken) {
     throw new Error("Failed to complete OAuth handshake with reddit " +
-      "-- can't find access token in HTTP response. " + responseContent);
+		    "-- can't find access token in HTTP response. " + responseContent);
   }
 
   return {
@@ -84,7 +84,7 @@ var getTokenResponse = function (query) {
 var getIdentity = function (accessToken) {
   try {
     return Meteor.http.get("https://oauth.reddit.com/api/v1/me", {
-        headers: { "Authorization": 'bearer ' + accessToken }
+      headers: { "Authorization": 'bearer ' + accessToken, "User-Agent": "Meteor/1.0"}
     }).data;
   } catch (err) {
     throw new Error("Failed to fetch identity from reddit. " + err.message);
