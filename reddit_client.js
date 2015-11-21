@@ -18,7 +18,9 @@ RedditOauth.requestCredential = function (options, callback) {
     return;
   }
 
-  var state = Random.id();
+  var credentialToken = Random.id();
+  var loginStyle = OAuth._loginStyle('steam', config, options);
+  var state = OAuth._stateParam(loginStyle, credentialToken);
 
   var scope = [];
   if (options && options.requestPermissions) {
@@ -31,5 +33,5 @@ RedditOauth.requestCredential = function (options, callback) {
       '&redirect_uri=' + encodeURIComponent(Meteor.absoluteUrl('_oauth/reddit?close')) +
       '&duration=permanent' + '&scope=' + scope;
 
-  OAuth.initiateLogin(state, loginUrl, callback, {width: 875, height: 400});
+  OAuth.initiateLogin(credentialToken, loginUrl, callback, {width: 875, height: 400});
 };
