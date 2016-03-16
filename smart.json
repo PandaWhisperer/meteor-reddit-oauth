@@ -1,8 +1,0 @@
-{
-  "name": "reddit-oauth",
-  "description": "Reddit Oauth connect flow",
-  "homepage": "https://github.com/cw4gn3r/meteor-reddit-oauth",
-  "author": "Christoph Wagner <github@christophwagner.me>",
-  "version": "0.0.7",
-  "git": "https://github.com/cw4gn3r/meteor-reddit-oauth.git"
-}
