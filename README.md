@@ -5,7 +5,7 @@ A Oauth2 wrapper for reddit
 
 ## Installation
 
-`meteor add reddit-oauth`
+`meteor add pandawhisperer:reddit-oauth`
 
 ## Usage
 
