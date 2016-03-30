@@ -22,7 +22,7 @@ RedditOauth.requestCredential = function (options, callback) {
   var loginStyle = OAuth._loginStyle('steam', config, options);
   var state = OAuth._stateParam(loginStyle, credentialToken);
 
-  var scope = [];
+  var scope = ['read'];
   if (options && options.requestPermissions) {
       scope = options.requestPermissions.join(',');
   }
