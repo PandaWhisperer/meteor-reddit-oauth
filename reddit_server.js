@@ -9,11 +9,13 @@ OAuth.registerService('reddit', 2, null, function(query) {
 
   var response = getTokenResponse(query);
   var accessToken = response.accessToken;
+  var scope = typeof response.scope == 'string' ? response.scope.split(' '):[];
   var identity = getIdentity(accessToken);
 
   var serviceData = {
     id: identity.name,
     accessToken: accessToken,
+    scope: scope,
     expiresAt: (+new Date) + (1000 * response.expiresIn)
   };
 
@@ -80,6 +82,7 @@ var getTokenResponse = function (query) {
   var tokenResponse = {};
   tokenResponse.accessToken = parsedResponse.access_token;
   tokenResponse.refreshToken = parsedResponse.refresh_token;
+  tokenResponse.scope = parsedResponse.scope;
   tokenResponse.expiresIn = parsedResponse.expires_in;
 
   if (!tokenResponse.accessToken) {
