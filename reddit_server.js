@@ -9,19 +9,17 @@ OAuth.registerService('reddit', 2, null, function(query) {
 
   var response = getTokenResponse(query);
   var accessToken = response.accessToken;
+  var refreshToken = response.refreshToken;
   var scope = typeof response.scope == 'string' ? response.scope.split(' '):[];
   var identity = getIdentity(accessToken);
 
   var serviceData = {
     id: identity.name,
     accessToken: accessToken,
+    refreshToken: refreshToken,
     scope: scope,
     expiresAt: (+new Date) + (1000 * response.expiresIn)
   };
-
-  if(response.refreshToken) {
-    serviceData.refreshToken = response.refreshToken;
-  }
 
   // include all fields from reddit
   // https://github.com/reddit/reddit/wiki/OAuth2
