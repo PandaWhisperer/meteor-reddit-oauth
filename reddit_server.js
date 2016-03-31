@@ -10,7 +10,8 @@ OAuth.registerService('reddit', 2, null, function(query) {
   var response = getTokenResponse(query);
   var accessToken = response.accessToken;
   var refreshToken = response.refreshToken;
-  var scope = typeof response.scope == 'string' ? response.scope.split(' '):[];
+  var scope = (response.scope && typeof response.scope == 'string') ?
+                response.scope.split(' ') : [];
   var identity = getIdentity(accessToken);
 
   var serviceData = {
