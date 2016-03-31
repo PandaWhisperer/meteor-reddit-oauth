@@ -1,5 +1,8 @@
 RedditOauth = {};
 
+// Set a default value for user-agent to use with http-requests.
+RedditOauth.userAgent = "Meteor/1.0";
+
 var urlUtil = Npm.require('url');
 
 OAuth.registerService('reddit', 2, null, function(query) {
@@ -59,7 +62,8 @@ var getTokenResponse = function (query) {
           grant_type: 'authorization_code',
           code: query.code,
           redirect_uri: Meteor.absoluteUrl("_oauth/reddit?close")
-        }
+        },
+        headers:{"User-Agent": RedditOauth.userAgent}
       }).content;
   } catch (err) {
     throw new Error("Failed to complete OAuth handshake with reddit. " + err.message);
@@ -89,7 +93,7 @@ var getTokenResponse = function (query) {
 var getIdentity = function (accessToken) {
   try {
     return Meteor.http.get("https://oauth.reddit.com/api/v1/me", {
-      headers: { "Authorization": 'bearer ' + accessToken, "User-Agent": "Meteor/1.0"}
+      headers: { "Authorization": 'bearer ' + accessToken, "User-Agent": RedditOauth.userAgent}
     }).data;
   } catch (err) {
     throw new Error("Failed to fetch identity from reddit. " + err.message);
