@@ -14,6 +14,10 @@ OAuth.registerService('reddit', 2, null, function(query) {
     expiresAt: (+new Date) + (1000 * response.expiresIn)
   };
 
+  if(response.refreshToken) {
+    serviceData.refreshToken = response.refreshToken;
+  }
+
   // include all fields from reddit
   // https://github.com/reddit/reddit/wiki/OAuth2
   var fields = _.pick(identity, ['name']);
@@ -38,6 +42,7 @@ var isJSON = function (str) {
 
 // returns an object containing:
 // - accessToken
+// - refreshToken
 // - expiresIn: lifetime of token in seconds
 var getTokenResponse = function (query) {
   var config = ServiceConfiguration.configurations.findOne({service: 'reddit'});
@@ -67,18 +72,18 @@ var getTokenResponse = function (query) {
 
   // Success! Extract access token and expiration
   var parsedResponse = JSON.parse(responseContent);
-  var accessToken = parsedResponse.access_token;
-  var expiresIn = parsedResponse.expires_in;
 
-  if (!accessToken) {
+  var tokenResponse = {};
+  tokenResponse.accessToken = parsedResponse.access_token;
+  tokenResponse.refreshToken = parsedResponse.refresh_token;
+  tokenResponse.expiresIn = parsedResponse.expires_in;
+
+  if (!tokenResponse.accessToken) {
     throw new Error("Failed to complete OAuth handshake with reddit " +
 		    "-- can't find access token in HTTP response. " + responseContent);
   }
 
-  return {
-    accessToken: accessToken,
-    expiresIn: expiresIn
-  };
+  return tokenResponse;
 };
 
 var getIdentity = function (accessToken) {
