@@ -56,7 +56,7 @@ var getTokenResponse = function (query) {
   var responseContent;
   try {
     // Request an access token
-    responseContent = Meteor.http.post(
+    responseContent = HTTP.call("POST", 
       "https://ssl.reddit.com/api/v1/access_token", {
         auth: [config.appId, config.secret].join(':'),
         params: {
@@ -94,7 +94,7 @@ var getTokenResponse = function (query) {
 
 var getIdentity = function (accessToken) {
   try {
-    return Meteor.http.get("https://oauth.reddit.com/api/v1/me", {
+    return HTTP.call("GET", "https://oauth.reddit.com/api/v1/me", {
       headers: { "Authorization": 'bearer ' + accessToken, "User-Agent": RedditOauth.userAgent}
     }).data;
   } catch (err) {
