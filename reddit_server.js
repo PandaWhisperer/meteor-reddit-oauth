@@ -1,16 +1,24 @@
 RedditOauth = {};
 
+// Set a default value for user-agent to use with http-requests.
+RedditOauth.userAgent = "Meteor/1.0";
+
 var urlUtil = Npm.require('url');
 
 OAuth.registerService('reddit', 2, null, function(query) {
 
   var response = getTokenResponse(query);
   var accessToken = response.accessToken;
+  var refreshToken = response.refreshToken;
+  var scope = (response.scope && typeof response.scope == 'string') ?
+                response.scope.split(' ') : [];
   var identity = getIdentity(accessToken);
 
   var serviceData = {
     id: identity.name,
     accessToken: accessToken,
+    refreshToken: refreshToken,
+    scope: scope,
     expiresAt: (+new Date) + (1000 * response.expiresIn)
   };
 
@@ -38,6 +46,7 @@ var isJSON = function (str) {
 
 // returns an object containing:
 // - accessToken
+// - refreshToken
 // - expiresIn: lifetime of token in seconds
 var getTokenResponse = function (query) {
   var config = ServiceConfiguration.configurations.findOne({service: 'reddit'});
@@ -47,14 +56,15 @@ var getTokenResponse = function (query) {
   var responseContent;
   try {
     // Request an access token
-    responseContent = Meteor.http.post(
+    responseContent = HTTP.call("POST", 
       "https://ssl.reddit.com/api/v1/access_token", {
         auth: [config.appId, config.secret].join(':'),
         params: {
           grant_type: 'authorization_code',
           code: query.code,
           redirect_uri: Meteor.absoluteUrl("_oauth/reddit?close")
-        }
+        },
+        headers:{"User-Agent": RedditOauth.userAgent}
       }).content;
   } catch (err) {
     throw new Error("Failed to complete OAuth handshake with reddit. " + err.message);
@@ -67,24 +77,25 @@ var getTokenResponse = function (query) {
 
   // Success! Extract access token and expiration
   var parsedResponse = JSON.parse(responseContent);
-  var accessToken = parsedResponse.access_token;
-  var expiresIn = parsedResponse.expires_in;
 
-  if (!accessToken) {
+  var tokenResponse = {};
+  tokenResponse.accessToken = parsedResponse.access_token;
+  tokenResponse.refreshToken = parsedResponse.refresh_token;
+  tokenResponse.scope = parsedResponse.scope;
+  tokenResponse.expiresIn = parsedResponse.expires_in;
+
+  if (!tokenResponse.accessToken) {
     throw new Error("Failed to complete OAuth handshake with reddit " +
 		    "-- can't find access token in HTTP response. " + responseContent);
   }
 
-  return {
-    accessToken: accessToken,
-    expiresIn: expiresIn
-  };
+  return tokenResponse;
 };
 
 var getIdentity = function (accessToken) {
   try {
-    return Meteor.http.get("https://oauth.reddit.com/api/v1/me", {
-      headers: { "Authorization": 'bearer ' + accessToken, "User-Agent": "Meteor/1.0"}
+    return HTTP.call("GET", "https://oauth.reddit.com/api/v1/me", {
+      headers: { "Authorization": 'bearer ' + accessToken, "User-Agent": RedditOauth.userAgent}
     }).data;
   } catch (err) {
     throw new Error("Failed to fetch identity from reddit. " + err.message);
