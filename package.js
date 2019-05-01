@@ -17,6 +17,8 @@ Package.onUse(function(api) {
   api.use('http', ['client', 'server']);
   api.use('templating', 'client');
   api.use('service-configuration', ['client', 'server']);
+  api.use('random', ['client', 'server']);
+  api.use('underscore', ['client', 'server']);
 
   api.export('RedditOauth');
 
